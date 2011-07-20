@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>untitled</title>
+  <meta name="generator" content="TextMate http://macromates.com/">
+  <meta name="author" content="Jason McLeod">
+  <!-- Date: 2011-07-19 -->
+  <style>
+    * {
+        margin:0px;
+        padding:0px;
+    }
+    html,body {
+        overflow:hidden;
+    }
+    #container {
+        position:absolute;
+    }
+    .cover {
+        /*float:left;*/
+        position:absolute;
+        width:100px;
+        height:100px;
+        background:#fafafa;
+        margin:5px;
+    }
+    .cover h1 {
+        color:#eee;
+        vertical-align:middle;
+        text-align:center;
+    }
+    .cover.selected {
+        border:2px solid #eee;
+    }
+  </style>
+</head>
+<body>
+
+    <div id='container'>
+    </div>
+
+    <script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/easing.js" type="text/javascript" charset="utf-8"></script>
+
+    <script>
+
+        var winWidth = 0;
+        var winHeight = 0;
+        var coverScale = 0;
+        var offset = 0;
+        var coverWidth = 360;
+        var coverHeight = 225;
+        var margin = 20;
+        var perRow = 6;
+        var camera = 0;
+        var selected = 0;
+        var wave = false;
+        var row = -1;
+        var prevRow = 0;
+
+        var covers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+
+        $(function() {
+            winWidth = $(window).width();
+            winHeight = $(window).height();
+            coverScale = winWidth / coverWidth / (perRow+1);
+            offset = winWidth - (((coverWidth-margin) * coverScale) * perRow);
+
+            camera = 0 * ((coverHeight+margin*2) * coverScale) - winHeight/2 + coverHeight/2 - margin*2
+
+            var yOffset = -1;
+            for(var c = 0; c < covers.length; c++) {
+                if(c%perRow==0) { yOffset++; }
+                $cover = $('<div class="cover" row="' + yOffset + '" cover="' + c + '"><h1>' + c + '</h1></div>');
+                $cover.css({
+                    left:((coverWidth*coverScale) + margin) * (c%perRow),
+                    top:yOffset*(coverScale*coverHeight+margin) - camera,
+                    width:coverWidth*coverScale,
+                    height:coverHeight*coverScale
+                });
+                $('#container').append($cover);
+            }
+
+            var xOffset = $('.cover:eq(' + (perRow-1) + ')').position().left + $('.cover:eq(' + (perRow-1) + ')').width()
+
+            $('#container').css({left:(winWidth - xOffset)/2})
+
+            $('.cover:first').addClass('selected')
+            $(document).keydown(function(e) {
+
+                var moved = false;
+                if(e.keyCode==37) { // left
+                    moved=true;
+                    selected--;
+                }
+                if(e.keyCode==38) { // up
+                    moved=true;
+                    selected-=perRow;
+                }
+                if(e.keyCode==39) { // right
+                    moved=true;
+                    selected++;
+                }
+                if(e.keyCode==40) { // down
+                    moved=true;
+                    selected+=perRow;
+                    camera++;
+                }
+
+                // out of range prevention
+                if(selected<0) { selected=0; }
+                if(selected>covers.length-1) { selected = covers.length-1}
+
+                $('.selected').removeClass('selected');
+                $('.cover:eq(' + selected + ')').addClass('selected');
+
+                row = $('.selected').attr('row')
+                if(prevRow!=row) {
+                    camera = row * ((coverHeight+margin*2) * coverScale) - winHeight/2 + coverHeight/2 - margin*2
+                    prevRow = row;
+                }
+
+                if(moved) {
+                    slideCovers();
+                    e.preventDefault();
+                }
+
+            });
+
+        });
+
+        function slideCovers() {
+            for(var c = 0; c < covers.length; c++) {
+                $this = $('.cover[cover="' + c + '"]');
+                setTimeout(function($elm) {
+                    $elm.animate({
+                        top:$elm.attr('row') * ((coverHeight+margin*2) * coverScale) - camera
+                    },{
+                        queue:false,
+                        duration:wave?1000:500,
+                        easing:wave?'easeOutElastic':'easeOutSine'
+                    })
+                },(wave?c*20:20),$this);
+            };
+        }
+
+    </script>
+</body>
+</html>

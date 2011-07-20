@@ -1,0 +1,6 @@
+What it is:
+
+This project aims to be a emulation front end which runs in kiosk mode. The machine this baby runs on will need
+all the emulators and roms on the file system.  It will also need a way to execute system commands. I'll be
+developing PHP and node.js scripts to do just that. In the future, there may be a websocket shuttle which could
+potentially connect to a thin executable which would fire system commands on behalf of the javascript (security nightmare :D)

@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>untitled</title>
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="Jason McLeod">
+	<!-- Date: 2011-07-15 -->
+</head>
+<body>
+
+<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    const LEFT = -1;
+    const RIGHT = 1;
+    var selected = 0;
+    var rowsize = 4;
+
+    var large = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+    var small = [];
+
+    small = large.slice(0,4);
+    console.log(small);
+
+    $(function() {
+        $(document).keydown(function(e) {
+            if(e.keyCode==37) {
+                rotate(LEFT);
+            }
+            if(e.keyCode==39) {
+                rotate(RIGHT);
+            }
+        });
+    });
+
+    function rotate(dir) {
+
+        if(dir==LEFT) {
+            selected = selected > 0 ? selected-1 : large.length-1;
+        } else {
+            selected = selected < large.length-1 ? selected+1 : 0;
+        }
+        small = large.slice(selected,selected+rowsize);
+        if(small.length<rowsize) {
+            var need = rowsize - Math.abs(selected-large.length);
+            var firstBit = large.slice(0,need);
+            small = large.slice(selected,rowsize-need+selected).concat(firstBit)
+        }
+
+        console.log(small)
+    }
+</script>
+
+
+</body>
+</html>

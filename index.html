@@ -56,7 +56,7 @@
         var perRow = 6;
         var camera = 0;
         var selected = 0;
-        var wave = false;
+        var wave = true;
         var row = -1;
         var prevRow = 0;
 
@@ -140,7 +140,7 @@
                     },{
                         queue:false,
                         duration:wave?1000:500,
-                        easing:wave?'easeOutElastic':'easeOutSine'
+                        easing:wave?'easeOutQuint':'easeOutSine'
                     })
                 },(wave?c*20:20),$this);
             };
